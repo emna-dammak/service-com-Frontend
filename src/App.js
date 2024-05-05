@@ -7,7 +7,7 @@ function App() {
       <>
               <Navbar></Navbar>
               <div className="ml-[20vw] bg-[#4B4B4B33]">
-              <div className="w-full h-[200vh] "></div>
+                  {/*Hotou lcomponents teekom houni!!!!!!!!!!!!!!!!!!*/}
               </div>
 
 
