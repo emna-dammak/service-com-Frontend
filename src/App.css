@@ -1,0 +1,8 @@
+.App {
+    display: flex;
+}
+
+.content {
+    padding-left: 20vw; /* This padding is to ensure no content goes under the fixed sidebar */
+    width: 80vw; /* Adjust content width to fill the remaining viewport width */
+}
