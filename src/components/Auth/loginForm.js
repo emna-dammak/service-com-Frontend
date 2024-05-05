@@ -2,6 +2,7 @@ import CompleteLogo from "../../assets/logo.svg";
 import EyeSlash from "../../assets/eye-slash.svg";
 import Eye from "../../assets/eye.svg";
 import React, {useState} from "react";
+import Cookies from 'js-cookie';
 
 
 
@@ -31,6 +32,8 @@ const LoginForm=({setPage})=>{
             });
 
             if (!response.ok) {
+                setPassword('')
+                setEmail('')
                 if (response.status === 401) {
                     setErrorMessage("Wrong credentials. Please try again.");
                 } else {
@@ -40,7 +43,8 @@ const LoginForm=({setPage})=>{
             }
 
             const data = await response.json();
-            console.log('Login successful:', data);
+            Cookies.set('jwtToken', data.access_token, { expires: 1, path: '/' });
+            window.location.href="/"
 
 
         } catch (error) {
