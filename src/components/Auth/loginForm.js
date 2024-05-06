@@ -28,6 +28,8 @@ const LoginForm=({setPage})=>{
                 headers: {
                     'Content-Type': 'application/json',
                 },
+                credentials: 'include',
+
                 body
             });
 
@@ -42,9 +44,22 @@ const LoginForm=({setPage})=>{
                 return;
             }
 
-            const data = await response.json();
-            Cookies.set('jwtToken', data.access_token, { expires: 1, path: '/' });
-            window.location.href="/"
+            const response1 = await fetch('http://localhost:3000/category?page=2&pageSize=5', {
+                method: 'GET',
+                headers: {
+                    'Content-Type': 'application/json',
+                },
+                credentials: 'include',
+
+
+
+            });
+            console.log(response1)
+
+
+            {/*
+                window.location.href = "/"*/
+            }
 
 
         } catch (error) {
