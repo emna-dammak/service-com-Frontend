@@ -44,17 +44,6 @@ const LoginForm=({setPage})=>{
                 return;
             }
 
-            const response1 = await fetch('http://localhost:3000/category?page=2&pageSize=5', {
-                method: 'GET',
-                headers: {
-                    'Content-Type': 'application/json',
-                },
-                credentials: 'include',
-
-
-
-            });
-            console.log(response1)
 
 
             {/*
