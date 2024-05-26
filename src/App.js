@@ -1,10 +1,13 @@
-import logo from "./logo.svg";
-import "./App.css";
-import ChatInterface from "./components/chatInterface";
-import TestWS from "./components/testWS";
+import './App.css';
+import AuthPage from "./components/Auth/Auth";
 
 function App() {
-  return <ChatInterface></ChatInterface>;
+  return (
+   <>
+       <AuthPage />
+   </>
+  );
+
 }
 
 export default App;
