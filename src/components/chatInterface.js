@@ -6,115 +6,19 @@ import SendMessageInput from "./sendMessage";
 import io from "socket.io-client";
 import ConversationList from "./conversationList";
 
-const SERVER_URL = "localhost:3000/";
+const SERVER_URL = "http://localhost:3000/";
 const token =
   "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6MTEsImZpcnN0TmFtZSI6Ikpob24iLCJsYXN0TmFtZSI6IkRvZSIsImVtYWlsIjoidGVzdGV0ZXN0ZXN0ZXdzQGdtYWlsLmNvbSIsImdvdXZlcm5vcmF0IjoiVHVuaXMiLCJkZWxlZ2F0aW9uIjoiQXJpYW5hIiwiaWF0IjoxNzE2NzM3OTk1LCJleHAiOjE3MTY3NDg3OTV9.ElEiLIZvFUETw9Wh52-jjcNlB84NtQGquTePtlBiB-8";
+
 const ChatInterface = () => {
   const [socket, setSocket] = useState(null);
   const [message, setMessage] = useState("");
   const [messages, setMessages] = useState([]);
-  const [currentUserId, setCurrentUserId] = useState(11);
-  const [currentConversation, setCurrentConversation] = useState({
-    id: 17,
-    user1: {
-      id: 11,
-      firstName: "Jhon",
-      lastName: "Doe",
-      gouvernorat: "Tunis",
-      delegation: "Ariana",
-      profileImagePath: null,
-      document: null,
-      role: "USER",
-      status: null,
-      email: "testetestestews@gmail.com",
-      password: "$2b$10$5VbuDhSvcJlUOdbCW7ZM..JtBUukacu5EDr6lXsmiDgEyInM0nHzm",
-      salt: "$2b$10$5VbuDhSvcJlUOdbCW7ZM..",
-    },
-    user2: {
-      id: 13,
-      firstName: "Jhon",
-      lastName: "Doe",
-      gouvernorat: "Tunis",
-      delegation: "Ariana",
-      profileImagePath: null,
-      document: null,
-      role: "SERVICE_PROVIDER",
-      status: null,
-      email: "tes@gmail.com",
-      password: "$2b$10$agyAb/fJ/SvStR4g4iSWCuU2tuGOfptn7vHoMVdODlAezicd9dwxi",
-      salt: "$2b$10$agyAb/fJ/SvStR4g4iSWCu",
-    },
-  });
-  const [conversations, setConversations] = useState([
-    {
-      id: 17,
-      user1: {
-        id: 11,
-        firstName: "Jhon",
-        lastName: "Doe",
-        gouvernorat: "Tunis",
-        delegation: "Ariana",
-        profileImagePath: null,
-        document: null,
-        role: "USER",
-        status: null,
-        email: "testetestestews@gmail.com",
-        password:
-          "$2b$10$5VbuDhSvcJlUOdbCW7ZM..JtBUukacu5EDr6lXsmiDgEyInM0nHzm",
-        salt: "$2b$10$5VbuDhSvcJlUOdbCW7ZM..",
-      },
-      user2: {
-        id: 13,
-        firstName: "Jhon",
-        lastName: "Doe",
-        gouvernorat: "Tunis",
-        delegation: "Ariana",
-        profileImagePath: null,
-        document: null,
-        role: "SERVICE_PROVIDER",
-        status: null,
-        email: "tes@gmail.com",
-        password:
-          "$2b$10$agyAb/fJ/SvStR4g4iSWCuU2tuGOfptn7vHoMVdODlAezicd9dwxi",
-        salt: "$2b$10$agyAb/fJ/SvStR4g4iSWCu",
-      },
-    },
-    {
-      id: 18,
-      user1: {
-        id: 3,
-        firstName: "Aziz",
-        lastName: "Ben Dhiab",
-        gouvernorat: "Tunis",
-        delegation: "La Marsa",
-        profileImagePath: "aa",
-        document: null,
-        role: "USER",
-        status: null,
-        email: "john2@example.com",
-        password:
-          "$2b$10$XGCxvN9cVU/.OWyEaOyg2ePXujbk4GCHTyT7i8JzeECxq.AsjTeg.",
-        salt: "$2b$10$XGCxvN9cVU/.OWyEaOyg2e",
-      },
-      user2: {
-        id: 11,
-        firstName: "Jhon",
-        lastName: "Doe",
-        gouvernorat: "Tunis",
-        delegation: "Ariana",
-        profileImagePath: null,
-        document: null,
-        role: "USER",
-        status: null,
-        email: "testetestestews@gmail.com",
-        password:
-          "$2b$10$5VbuDhSvcJlUOdbCW7ZM..JtBUukacu5EDr6lXsmiDgEyInM0nHzm",
-        salt: "$2b$10$5VbuDhSvcJlUOdbCW7ZM..",
-      },
-    },
-  ]);
+  const [currentUserId, setCurrentUserId] = useState();
+  const [currentConversation, setCurrentConversation] = useState(null);
+  const [conversations, setConversations] = useState([]);
   const [roomId, setRoomId] = useState(""); // Used if you want to join a specific room
-  const [conversationId, setConversationId] = useState(currentConversation.id); // Store the conversation ID
+  const [conversationId, setConversationId] = useState(); // Store the conversation ID
 
   useEffect(() => {
     const fetchConversations = async () => {
@@ -126,9 +30,8 @@ const ChatInterface = () => {
             method: "GET",
             headers: {
               "Content-Type": "application/json",
-              Authorization: `Bearer ${token}`, // Add the Authorization header with the 'Bearer' scheme
             },
-            credentials: "include", // Include credentials in the request
+            credentials: "include",
           }
         );
         // Check if the response is successful
@@ -139,8 +42,13 @@ const ChatInterface = () => {
         // Parse the JSON data
         const data = await response.json();
         console.log(data);
-        // Update the state with the fetched events
+        // Update the state with the fetched conversations
         setConversations(data);
+        if (!currentConversation) {
+          const lastConv = data[0]; // Fixed typo
+          setCurrentConversation(lastConv);
+          setConversationId(lastConv.id);
+        }
       } catch (error) {
         console.error("Error fetching events:", error);
       }
@@ -148,20 +56,25 @@ const ChatInterface = () => {
     // Call the fetchConversations function
     fetchConversations();
   }, []); // Empty dependency array ensures the effect runs only once (on mount)
+
   useEffect(() => {
     console.log(conversations);
   }, [conversations]);
+
   useEffect(() => {
     const socketIo = io(SERVER_URL, {
-      extraHeaders: {
-        authorization: `Bearer ${token}`,
-      },
+      withCredentials: true, // Include credentials in the request
     });
 
     setSocket(socketIo);
 
     socketIo.on("connect", () => {
       console.log("Connected!");
+    });
+
+    socketIo.on("id", (UserID) => {
+      console.log(UserID);
+      setCurrentUserId(UserID);
     });
 
     socketIo.on("messageHistory", (oldMessages) => {
@@ -191,15 +104,17 @@ const ChatInterface = () => {
 
   const handleSendMessage = () => {
     if (socket) {
-      let newMessage = {
-        text: message,
-        recipientId: 13,
-      };
-      socket.emit("addMessage", JSON.stringify(newMessage));
       const recipientId =
         currentConversation.user1 === currentUserId
-          ? currentConversation.user2
-          : currentConversation.user1;
+          ? currentConversation.user2.id
+          : currentConversation.user1.id;
+
+      let newMessage = {
+        text: message,
+        recipientId: recipientId,
+      };
+      console.log(newMessage);
+      socket.emit("addMessage", JSON.stringify(newMessage));
 
       newMessage = {
         sender: { id: currentUserId },
@@ -210,7 +125,9 @@ const ChatInterface = () => {
       setMessage("");
     }
   };
+
   const selectConversation = (conversation) => {
+    console.log(conversation.id);
     setConversationId(conversation.id);
     setCurrentConversation(conversation);
   };
@@ -224,7 +141,7 @@ const ChatInterface = () => {
           conversationId={conversationId}
         />
       </div>
-      <div className="w-3/4  flex flex-col justify-between">
+      <div className="w-3/4  flex flex-col ">
         <ConversationHeader
           conversations={conversations}
           currentConversation={currentConversation}

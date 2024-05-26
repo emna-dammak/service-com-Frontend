@@ -5,10 +5,12 @@ const ConversationHeader = (props) => {
 
   useEffect(() => {
     const getOtherUser = () => {
-      if (props.currentConversation.user1.id === props.currentUserId) {
-        setOtherUser(props.currentConversation.user2);
-      } else {
-        setOtherUser(props.currentConversation.user1);
+      if (props.currentConversation) {
+        if (props.currentConversation.user1.id === props.currentUserId) {
+          setOtherUser(props.currentConversation.user2);
+        } else {
+          setOtherUser(props.currentConversation.user1);
+        }
       }
     };
     getOtherUser();
