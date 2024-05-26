@@ -7,6 +7,7 @@ function App() {
        <AuthPage />
    </>
   );
+
 }
 
 export default App;
