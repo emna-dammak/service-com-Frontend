@@ -1,8 +1,10 @@
 import './App.css';
 import AuthPage from "./components/Auth/Auth";
+import Service from './service';
 
-function App() {
+const App = () => {
   return (
+
    <>
        <AuthPage />
    </>
