@@ -1,11 +1,12 @@
-import logo from './logo.svg';
-import './App.css';
+import React from 'react';
+import Service from './service';
 
-function App() {
+const App = () => {
   return (
-   <>
-   </>
+    <div className="min-h-screen bg-gray-100 p-6">
+      <Service />
+    </div>
   );
-}
+};
 
 export default App;

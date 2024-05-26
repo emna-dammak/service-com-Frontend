@@ -4,6 +4,7 @@ module.exports = {
     "./src/**/*.{js,jsx,ts,tsx}",
   ],
   theme: {
+    darkMode: 'class',
     extend: {
       fontFamily:{
         'public':['Public Sans, sans-serif']
@@ -12,4 +13,3 @@ module.exports = {
   },
   plugins: [require('tailwind-scrollbar'),],
 }
-
