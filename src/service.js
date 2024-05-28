@@ -1,46 +1,61 @@
 import React, { useState, useEffect } from 'react';
 import axios from 'axios';
 import io from 'socket.io-client';
+import { useParams } from 'react-router-dom';
 
-const token="eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6MiwiZmlyc3ROYW1lIjoiIiwibGFzdE5hbWUiOiIiLCJlbWFpbCI6ImVtbmFAdGVzdHQuY29tIiwiZ291dmVybm9yYXQiOiIiLCJkZWxlZ2F0aW9uIjoiIiwiaWF0IjoxNzE2NzE5NDc3fQ.g7FvTHY8dWL0KVR_SVOV-4tZh0Rns0_2LDSlhe5od3A"
 
 
 const Service = () => {
   const [comments, setComments] = useState([]);
   const [content, setContent] = useState('');
-const [socket, setSocket] =useState();
+  const [socket, setSocket] =useState();
+  const { serviceId } = useParams();
+  const [newComment,setnewComment] =useState('');
   useEffect(() => {
     const socketIO = io('http://localhost:3000/events', {
-  transports: ['websocket'],
-  autoConnect: false,
-  extraHeaders: {
-    Authorization:`Bearer ${token}`,
-  } 
+  withCredentials: true, 
 });
 setSocket(socketIO);
 socketIO.on("connect", () => {
       console.log("Connected!");
+      
     });
-    // Listen for the 'newComment' event from the server
     socketIO.on("newComment", (newComment) => {
-      setComments((prevComments) => [...prevComments, newComment]);
+        console.log(serviceId)
+        console.log(newComment.serviceId)
+      if (newComment.serviceId === Number(serviceId)) {
+        
+      setComments((prevComments) => [...prevComments, newComment]);}
     });
 
-    // Fetch initial comments
     fetchComments();
 
-    // Cleanup when the component is unmounted
     return () => {
       socketIO.disconnect();
     };
-  }, []);
+  }, [serviceId]);
 
-  // Function to fetch comments from the server
   const fetchComments = async () => {
     try {
-      const config = { headers: { Authorization: `Bearer ${token}` } };
-      const response = await axios.get('http://localhost:3000/comments', config);
-      setComments(response.data);
+      const response = await fetch(
+        `http://localhost:3000/comments/${serviceId}`,
+        {
+          method: "GET",
+          headers: {
+            "Content-Type": "application/json",
+          },
+          credentials: "include",
+        }
+      );
+      // Check if the response is successful
+      if (!response.ok) {
+        throw new Error("Network response was not ok");
+      }
+
+      const data = await response.json();
+      setComments(data);
+      console.log(data)
+
     } catch (error) {
       console.error('Error fetching comments:', error);
     }
@@ -51,11 +66,14 @@ socketIO.on("connect", () => {
     if (content.trim() === '') return;
 
     
-    const newComment = { content, serviceId: 1 };  // Replace 1 with the actual service ID
-     socket.emit('comment', JSON.stringify(newComment));
+    const newCommentData = { content, serviceId: Number(serviceId) };  // Create an object with content and serviceId
+  setnewComment(newCommentData);  // Set the new comment data
 
-    // Clear the input field
-    setContent('');
+  // Emit the new comment via socket.io
+  socket.emit('comment', JSON.stringify(newCommentData));
+
+  // Clear the input field
+  setContent('');
   };
 
   return (
@@ -73,7 +91,12 @@ const CommentList = ({ comments }) => (
   <ul className="space-y-4">
     {comments.map((comment) => (
       <li key={comment.id} className="bg-gray-100 p-4 rounded-lg shadow">
-        <p className="text-gray-800">{comment.content}</p>
+
+        <div className="flex justify-between items-center">
+          <small className="text-green-600">{comment.user.firstName}</small>
+        </div>
+        <p className="text-gray-1000 text-lg">{comment.content}</p>
+        
       </li>
     ))}
   </ul>
