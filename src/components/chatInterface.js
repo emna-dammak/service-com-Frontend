@@ -1,5 +1,4 @@
 import React, { useState, useEffect } from "react";
-import "../styles/chatInterface.css";
 import ConversationHeader from "./conversationHeader";
 import Message from "./messages";
 import SendMessageInput from "./sendMessage";
@@ -7,8 +6,6 @@ import io from "socket.io-client";
 import ConversationList from "./conversationList";
 
 const SERVER_URL = "http://localhost:3000/";
-const token =
-  "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6MTEsImZpcnN0TmFtZSI6Ikpob24iLCJsYXN0TmFtZSI6IkRvZSIsImVtYWlsIjoidGVzdGV0ZXN0ZXN0ZXdzQGdtYWlsLmNvbSIsImdvdXZlcm5vcmF0IjoiVHVuaXMiLCJkZWxlZ2F0aW9uIjoiQXJpYW5hIiwiaWF0IjoxNzE2NzM3OTk1LCJleHAiOjE3MTY3NDg3OTV9.ElEiLIZvFUETw9Wh52-jjcNlB84NtQGquTePtlBiB-8";
 
 const ChatInterface = () => {
   const [socket, setSocket] = useState(null);
@@ -23,7 +20,6 @@ const ChatInterface = () => {
   useEffect(() => {
     const fetchConversations = async () => {
       try {
-        // Fetch data from the API
         const response = await fetch(
           "http://localhost:3000/conversations/user",
           {
@@ -34,18 +30,16 @@ const ChatInterface = () => {
             credentials: "include",
           }
         );
-        // Check if the response is successful
+
         if (!response.ok) {
           throw new Error("Network response was not ok");
         }
 
-        // Parse the JSON data
         const data = await response.json();
         console.log(data);
-        // Update the state with the fetched conversations
         setConversations(data);
         if (!currentConversation) {
-          const lastConv = data[0]; // Fixed typo
+          const lastConv = data[0];
           setCurrentConversation(lastConv);
           setConversationId(lastConv.id);
         }
@@ -53,9 +47,8 @@ const ChatInterface = () => {
         console.error("Error fetching events:", error);
       }
     };
-    // Call the fetchConversations function
     fetchConversations();
-  }, []); // Empty dependency array ensures the effect runs only once (on mount)
+  }, []);
 
   useEffect(() => {
     console.log(conversations);
@@ -70,19 +63,21 @@ const ChatInterface = () => {
 
     socketIo.on("connect", () => {
       console.log("Connected!");
+      socketIo.emit("getCurrentUser");
     });
 
     socketIo.on("id", (UserID) => {
-      console.log(UserID);
+      console.log("Received UserID:", UserID); // Debugging log
       setCurrentUserId(UserID);
     });
 
     socketIo.on("messageHistory", (oldMessages) => {
       setMessages(oldMessages);
-      console.log(oldMessages);
+      console.log("Old Messages:", oldMessages);
     });
 
     socketIo.on("message", (newMessage) => {
+      console.log("New Message:", newMessage); // Debugging log
       setMessages((msgs) => [...msgs, newMessage]);
     });
 
@@ -95,7 +90,6 @@ const ChatInterface = () => {
     };
   }, []);
 
-  // Fetch messages when conversationId changes
   useEffect(() => {
     if (socket && conversationId) {
       socket.emit("getMessages", conversationId);
@@ -103,23 +97,24 @@ const ChatInterface = () => {
   }, [conversationId, socket]);
 
   const handleSendMessage = () => {
-    if (socket) {
+    if (socket && currentUserId) {
       const recipientId =
-        currentConversation.user1 === currentUserId
+        currentConversation.user1.id === currentUserId
           ? currentConversation.user2.id
           : currentConversation.user1.id;
 
       let newMessage = {
         text: message,
         recipientId: recipientId,
+        senderId: currentUserId, // Ensure senderId is included
       };
-      console.log(newMessage);
-      socket.emit("addMessage", JSON.stringify(newMessage));
+      console.log("Sending Message:", newMessage); // Debugging log
+      socket.emit("addMessage", newMessage);
 
       newMessage = {
         sender: { id: currentUserId },
         text: message,
-        recipient: { id: recipientId }, // Replace with recipient's actual ID
+        recipient: { id: recipientId },
       };
       setMessages((msgs) => [...msgs, newMessage]);
       setMessage("");
@@ -139,21 +134,26 @@ const ChatInterface = () => {
           onSelectConversation={selectConversation}
           conversations={conversations}
           conversationId={conversationId}
+          currentUserId={currentUserId}
         />
       </div>
-      <div className="w-3/4  flex flex-col ">
+      <div className="w-3/4 flex flex-col  bg-gray-100">
         <ConversationHeader
           conversations={conversations}
           currentConversation={currentConversation}
           currentUserId={currentUserId}
         />
-        <Message messages={messages} currentUserId={currentUserId} />
-        <SendMessageInput
-          sendMessage={handleSendMessage}
-          input={message}
-          setInput={setMessage}
-          currentUserId={currentUserId}
-        />
+        <div className="flex flex-col flex-grow overflow-y-auto">
+          <Message messages={messages} currentUserId={currentUserId} />
+        </div>
+        <div className="flex-shrink-0">
+          <SendMessageInput
+            sendMessage={handleSendMessage}
+            input={message}
+            setInput={setMessage}
+            currentUserId={currentUserId}
+          />
+        </div>
       </div>
     </div>
   );
