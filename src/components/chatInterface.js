@@ -14,7 +14,6 @@ const ChatInterface = () => {
   const [currentUserId, setCurrentUserId] = useState();
   const [currentConversation, setCurrentConversation] = useState(null);
   const [conversations, setConversations] = useState([]);
-  const [roomId, setRoomId] = useState(""); // Used if you want to join a specific room
   const [conversationId, setConversationId] = useState(); // Store the conversation ID
 
   useEffect(() => {
@@ -48,7 +47,7 @@ const ChatInterface = () => {
       }
     };
     fetchConversations();
-  }, []);
+  });
 
   useEffect(() => {
     console.log(conversations);

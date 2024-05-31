@@ -19,7 +19,7 @@ const Message = (props) => {
       {props.messages
         .filter((message) => message.text !== "")
         .map((message, index) => {
-          const isSentByCurrentUser = message.sender.id == props.currentUserId;
+          const isSentByCurrentUser = message.sender.id === props.currentUserId;
           return (
             <div key={index} className="chat-message flex w-full">
               {isSentByCurrentUser ? (
