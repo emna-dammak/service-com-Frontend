@@ -4,6 +4,7 @@ import Message from "./messages";
 import SendMessageInput from "./sendMessage";
 import io from "socket.io-client";
 import ConversationList from "./conversationList";
+import { format } from "date-fns";
 
 const SERVER_URL = "http://localhost:3000/";
 
@@ -14,7 +15,7 @@ const ChatInterface = () => {
   const [currentUserId, setCurrentUserId] = useState();
   const [currentConversation, setCurrentConversation] = useState(null);
   const [conversations, setConversations] = useState([]);
-  const [conversationId, setConversationId] = useState(); // Store the conversation ID
+  const [conversationId, setConversationId] = useState();
 
   useEffect(() => {
     const fetchConversations = async () => {
@@ -47,7 +48,7 @@ const ChatInterface = () => {
       }
     };
     fetchConversations();
-  });
+  }, []);
 
   useEffect(() => {
     console.log(conversations);
@@ -55,7 +56,7 @@ const ChatInterface = () => {
 
   useEffect(() => {
     const socketIo = io(SERVER_URL, {
-      withCredentials: true, // Include credentials in the request
+      withCredentials: true,
     });
 
     setSocket(socketIo);
@@ -109,11 +110,13 @@ const ChatInterface = () => {
       };
       console.log("Sending Message:", newMessage); // Debugging log
       socket.emit("addMessage", newMessage);
-
+      const now = new Date();
+      const formattedDate = format(now, "yyyy-MM-dd HH:mm:ss.SSSSSS");
       newMessage = {
         sender: { id: currentUserId },
         text: message,
         recipient: { id: recipientId },
+        createdAt: formattedDate,
       };
       setMessages((msgs) => [...msgs, newMessage]);
       setMessage("");
