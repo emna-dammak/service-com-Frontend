@@ -1,9 +1,13 @@
 import React from "react";
+import { HiOutlinePlusSm } from "react-icons/hi";
 
 const ConversationList = (props) => {
   return (
     <div className="w-full h-full text-black overflow-y-auto">
-      <div className="p-5 font-bold">Conversations</div>
+      <div className="p-5 font-bold flex justify-between items-center">
+        <span>Conversations</span>
+        {/* <HiOutlinePlusSm className="text-xl cursor-pointer" /> */}
+      </div>
       <ul>
         {props.conversations.map((conversation) => (
           <li
