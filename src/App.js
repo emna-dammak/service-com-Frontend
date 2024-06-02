@@ -1,10 +1,12 @@
 import Navbar from "./components/navbar/navbar";
 import './App.css';
 import AuthPage from "./components/Auth/Auth";
+import Service from './service';
 
 
 function App() {
   return (
+
        <AuthPage />
       <>
               <Navbar></Navbar>
@@ -13,6 +15,7 @@ function App() {
               </div>
       </>
   );
+
 }
 
 export default App;

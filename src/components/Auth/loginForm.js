@@ -28,6 +28,8 @@ const LoginForm=({setPage})=>{
                 headers: {
                     'Content-Type': 'application/json',
                 },
+                credentials: 'include',
+
                 body
             });
 
@@ -42,9 +44,11 @@ const LoginForm=({setPage})=>{
                 return;
             }
 
-            const data = await response.json();
-            Cookies.set('jwtToken', data.access_token, { expires: 1, path: '/' });
-            window.location.href="/"
+
+
+            {/*
+                window.location.href = "/"*/
+            }
 
 
         } catch (error) {
