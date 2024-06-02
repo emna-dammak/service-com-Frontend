@@ -28,7 +28,8 @@ const LoginForm=({setPage})=>{
                 headers: {
                     'Content-Type': 'application/json',
                 },
-                body
+                body,
+                credentials: 'include', // Ensure cookies are included in the request
             });
 
             if (!response.ok) {
