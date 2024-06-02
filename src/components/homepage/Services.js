@@ -79,7 +79,7 @@ const Services = () => {
 
 
   const handleViewMore = (service) => {
-    const relatedServices = AllServices.filter(s => s.profession.userId === service.profession.userId && s.id !== service.id);
+    const relatedServices = AllServices.filter(s => s.profession.user.id === service.profession.user.id && s.id !== service.id);
     navigate(`/service/${service.id}`, { state: { service, relatedServices, allServices: AllServices } });
   };
 
