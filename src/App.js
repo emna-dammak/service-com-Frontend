@@ -1,21 +1,20 @@
-import Navbar from "./components/navbar/navbar";
-import './App.css';
+
+import React from "react";
+import { BrowserRouter as Router, Route, Routes } from "react-router-dom";
 import AuthPage from "./components/Auth/Auth";
+import ChatInterface from "./components/chatInterface";
 import Service from './service';
-
-
+import Navbar from "./components/navbar/navbar";
 function App() {
   return (
+    <Router>
+      <Routes>
+        <Route path="/" element={<AuthPage />}></Route>
+        <Route path="/chat" element={<ChatInterface />}></Route>
+      </Routes>
+    </Router>
 
-       <AuthPage />
-      <>
-              <Navbar></Navbar>
-              <div className="ml-[20vw] bg-[#4B4B4B33]">
-                  {/*Hotou lcomponents teekom houni!!!!!!!!!!!!!!!!!!*/}
-              </div>
-      </>
   );
-
 }
 
 export default App;
