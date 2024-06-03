@@ -1,8 +1,10 @@
 import React, { useState, useEffect } from 'react';
+import { useNavigate } from 'react-router-dom';
 
 const Categories = () => {
   const [categories, setCategories] = useState([]);
   const [error, setError] = useState(null);
+  const navigate = useNavigate();
 
   useEffect(() => {
     const fetchCategories = async () => {
@@ -32,6 +34,10 @@ const Categories = () => {
     fetchCategories();
   }, []);
 
+  const handleCategoryClick = (categoryTitle) => {
+    navigate(`/service?category=${categoryTitle}&region=`);
+  };
+
   return (
     <div className="min-h-screen bg-gray-200 flex flex-col items-center justify-center py-16">
       <h3 className="text-3xl font-bold text-gray-900 mb-12">
@@ -44,6 +50,7 @@ const Categories = () => {
             key={index}
             role="button"
             className="relative overflow-hidden rounded-lg shadow-lg group cursor-pointer"
+            onClick={() => handleCategoryClick(category.title)}
           >
             <img
               src={`/${category.iconPath}`}
@@ -60,4 +67,5 @@ const Categories = () => {
     </div>
   );
 };
+
 export default Categories;

@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import { useNavigate } from 'react-router-dom';
+import { useNavigate, useLocation } from 'react-router-dom';
 
 const ServiceList = () => {
   const [services, setServices] = useState([]);
@@ -9,6 +9,7 @@ const ServiceList = () => {
   const [selectedCategory, setSelectedCategory] = useState('');
   const [selectedRegion, setSelectedRegion] = useState('');
   const navigate = useNavigate();
+  const location = useLocation();
 
   useEffect(() => {
     const fetchServices = async () => {
@@ -82,7 +83,27 @@ const ServiceList = () => {
     fetchServices();
   }, []);
 
-  const maxPerPage = 6; 
+  useEffect(() => {
+    const queryParams = new URLSearchParams(location.search);
+    const category = queryParams.get('category') || '';
+    const region = queryParams.get('region') || '';
+    setSelectedCategory(category);
+    setSelectedRegion(region);
+  }, [location.search]);
+
+  const handleCategoryChange = (e) => {
+    const category = e.target.value;
+    setSelectedCategory(category);
+    navigate(`?category=${category}&region=${selectedRegion}`);
+  };
+
+  const handleRegionChange = (e) => {
+    const region = e.target.value;
+    setSelectedRegion(region);
+    navigate(`?category=${selectedCategory}&region=${region}`);
+  };
+
+  const maxPerPage = 6;
   const [currentPage, setCurrentPage] = useState(1);
 
   const filteredServices = services.filter(service => {
@@ -114,7 +135,7 @@ const ServiceList = () => {
           <select
             className="px-4 py-2 border rounded text-gray-500 text-sm w-64"
             value={selectedRegion}
-            onChange={(e) => setSelectedRegion(e.target.value)}
+            onChange={handleRegionChange}
           >
             <option value="" className="text-gray-500">All Regions</option>
             {regions.map(region => (
@@ -124,7 +145,7 @@ const ServiceList = () => {
           <select
             className="px-4 py-2 border rounded text-gray-500 text-sm w-64"
             value={selectedCategory}
-            onChange={(e) => setSelectedCategory(e.target.value)}
+            onChange={handleCategoryChange}
           >
             <option value="" className="text-gray-500">All Categories</option>
             {categories.map(category => (
