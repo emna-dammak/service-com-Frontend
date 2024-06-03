@@ -7,12 +7,26 @@ import SpProfile from "./components/ServiceProvider/SpProfile";
 import { BrowserRouter as Router, Route, Routes } from 'react-router-dom';
 import React from "react";
 import ChatInterface from "./components/chatInterface";
+import ServiceList from "./components/ServiceList";
+import ServicePage from "./components/ServicePage/ServicePage";
+import HomePage from "./components/homepage/Homepage";
 function App() {
   return (
     <Router>
 
       <Routes>
         <Route path="/" element={<AuthPage />}></Route>
+          <Route exact path="/HomePage" element={<HomePage />} />
+          <Route exact path="/service" element={
+              <> <Navbar></Navbar>
+                  <div className="ml-[20vw] bg-gray-200 p-4">
+                      <ServiceList />
+                  </div></>
+             } />
+          <Route path="/service/:id" element={ <> <Navbar></Navbar>
+              <div className="ml-[20vw] bg-gray-200 p-4">
+                  <ServicePage />
+              </div></>} />
 
         <Route path="/chat" element={<> <Navbar></Navbar>
             <div className="ml-[20vw] bg-[#4B4B4B33]">
