@@ -1,6 +1,7 @@
 import CompleteLogo from "../../assets/logo.svg";
 import EyeSlash from "../../assets/eye-slash.svg";
 import Eye from "../../assets/eye.svg";
+
 import React, { useState } from "react";
 
 const LoginForm = ({ setPage }) => {
@@ -35,6 +36,7 @@ const LoginForm = ({ setPage }) => {
           setErrorMessage("Wrong credentials. Please try again.");
         } else {
           setErrorMessage(`Please Verify Your Internet Connections`);
+
         }
         return;
       }
