@@ -20,12 +20,12 @@ function App() {
             </div></>}></Route>
            <Route path="/sp" element={
                <> <Navbar></Navbar>
-                   <div className="ml-[20vw] bg-[#4B4B4B33]">
+                   <div className="ml-[20vw] bg-gray-200 p-4">
                        <ServiceProviderList />
                    </div></>} />
             <Route path="/profile/:id" element={
                 <> <Navbar></Navbar>
-                    <div className="ml-[20vw] bg-[#4B4B4B33]">
+                    <div className="ml-[20vw] bg-gray-200 p-4">
                         <SpProfile />
                     </div></>
                 } />
