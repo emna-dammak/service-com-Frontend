@@ -1,4 +1,3 @@
-
 import Navbar from "./components/navbar/navbar";
 import "./App.css";
 import ServiceProviderList from "./components/ServiceProvider/ServiceProviderList";
