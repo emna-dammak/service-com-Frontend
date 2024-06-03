@@ -18,8 +18,17 @@ function App() {
             <div className="ml-[20vw] bg-[#4B4B4B33]">
                 <ChatInterface />
             </div></>}></Route>
-           <Route path="/sp" element={<ServiceProviderList />} />
-            <Route path="/profile/:id" element={<SpProfile />} />
+           <Route path="/sp" element={
+               <> <Navbar></Navbar>
+                   <div className="ml-[20vw] bg-[#4B4B4B33]">
+                       <ServiceProviderList />
+                   </div></>} />
+            <Route path="/profile/:id" element={
+                <> <Navbar></Navbar>
+                    <div className="ml-[20vw] bg-[#4B4B4B33]">
+                        <SpProfile />
+                    </div></>
+                } />
       </Routes>
     
 
