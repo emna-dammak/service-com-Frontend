@@ -16,7 +16,12 @@ function App() {
 
       <Routes>
         <Route path="/" element={<AuthPage />}></Route>
-          <Route exact path="/HomePage" element={<HomePage />} />
+          <Route exact path="/HomePage" element={
+              <>
+                  <div className="bg-gray-200 p-4">
+                      <HomePage />
+                  </div></>
+              } />
           <Route exact path="/service" element={
               <> <Navbar></Navbar>
                   <div className="ml-[20vw] bg-gray-200 p-4">
