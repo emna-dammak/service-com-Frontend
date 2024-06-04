@@ -117,7 +117,7 @@ const SignUpForm=({setPage})=>{
                 }
                 }
 
-                window.location.href = '/';
+                window.location.href = '/service';
 
             }else if(response.status===409){
                 throw new Error("this email is already registred")

@@ -1,5 +1,6 @@
-import React from "react";
+import React, {useEffect} from "react";
 import { useNavigate } from "react-router-dom";
+import { useState } from "react";
 const LandingPage = () => {
   const navigate = useNavigate();
 
@@ -12,6 +13,36 @@ const LandingPage = () => {
   const handleStartButton = () => {
     navigate("/login", { state: { page: 2 } });
   };
+  const [isAuthenticated, setIsAuthenticated] = useState(false);
+  useEffect(() => {
+
+    const checkAuth =async () => {
+      try {
+        const response = await fetch('http://localhost:3000/user/auth', {
+          method: "GET",
+          headers: {
+            "Content-Type": "application/json",
+          },
+          credentials: "include",
+        });
+        if (response.status === 401) {
+          setIsAuthenticated(false);
+
+
+
+
+        } else {
+          setIsAuthenticated(true);
+        }
+      } catch (error) {
+        console.error('Failed to check auth', error);
+        setIsAuthenticated(false);
+
+      }
+    };
+
+    checkAuth();
+  }, );
   return (
     <div className="min-h-screen bg-gradient-bg flex flex-col items-center justify-center text-white rounded-br-full">
       <header className="fixed top-0 left-0 right-0 flex justify-between items-center w-full p-6 bg-gradient-bg shadow-md z-50">
@@ -30,20 +61,21 @@ const LandingPage = () => {
             About Us
           </a>
         </nav>
-        <div className="space-x-4">
+        {isAuthenticated ? null : <div className="space-x-4">
           <button
-            className="bg-white text-teal-400 px-4 py-2 rounded-full hover:bg-gray-200 hover:text-teal-600 "
-            onClick={handleSignInClick}
+              className="bg-white text-teal-400 px-4 py-2 rounded-full hover:bg-gray-200 hover:text-teal-600 "
+              onClick={handleSignInClick}
           >
             SingIn
           </button>
           <button
-            className="bg-white text-teal-400 px-4 py-2 rounded-full hover:bg-gray-200 hover:text-teal-600 "
-            onClick={handleSignUpClick}
+              className="bg-white text-teal-400 px-4 py-2 rounded-full hover:bg-gray-200 hover:text-teal-600 "
+              onClick={handleSignUpClick}
           >
             Signup
           </button>
-        </div>
+        </div>}
+
       </header>
 
       <main className="flex flex-col items-center text-center mt-24">
