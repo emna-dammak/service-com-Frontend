@@ -11,6 +11,7 @@ import ServicePage from "./components/ServicePage/ServicePage";
 import HomePage from "./components/homepage/Homepage";
 import OrderTable from "./components/orders/orderTable";
 import AuthGuard from "./components/authGuard/authGuard";
+import PlansArticle  from "./components/navbar/PlansArticle";
 function App() {
   return (
     <Router>
@@ -36,6 +37,8 @@ function App() {
               <Navbar></Navbar>
               <div className="ml-[20vw] bg-gray-200 p-4">
                 <ServiceList />
+                  <PlansArticle />
+                  <ServiceProviderList />
               </div>
             </>
             </AuthGuard>
