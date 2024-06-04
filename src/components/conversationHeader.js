@@ -17,7 +17,7 @@ const ConversationHeader = (props) => {
   }, [props.currentConversation, props.currentUserId]);
 
   return (
-    <div className="flex sm:items-center justify-between py-1 sm:py-2 border-b border-gray-200">
+    <div className="flex sm:items-center justify-between py-1 sm:py-2 border-b border-gray-200 bg-white">
       <div className="relative flex items-center space-x-2 sm:space-x-3">
         <div className="relative">
           <span className="absolute text-green-500 right-0 bottom-0">
