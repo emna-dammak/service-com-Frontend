@@ -1,11 +1,49 @@
-import React from 'react';
+import React, { useState } from 'react';
+import Datetime from 'react-datetime';
 import { useNavigate } from 'react-router-dom';
+import axios from 'axios';
+import moment from 'moment';
+
 
 const ServiceDetails = ({ service }) => {
-  const navigate = useNavigate();
+  console.log(service)
 
+  const navigate = useNavigate();
+  const [selectedDate, setSelectedDate] = useState(null);
+  const [showDatePicker, setShowDatePicker] = useState(false);
   const handleBackClick = () => {
     navigate(-1); 
+  };
+console.log(service)
+
+  const handleOrderClick = () => {
+    setShowDatePicker(true);
+  };
+
+  const handleDateChange = (date) => {
+    setSelectedDate(date);
+  };
+
+  const handleOrderSubmit = async () => {
+    if (!selectedDate) {
+      alert('Please select a date and time.');
+      return;
+    }
+
+    const orderData = {
+      serviceId: service.id,
+      date: selectedDate.toISOString()
+    };
+    try {
+      const response = await axios.post('http://localhost:3000/order', orderData, {
+        withCredentials: true
+      });
+      alert('Order created successfully!');
+      navigate('/orders');
+    } catch (error) {
+      console.error('Error creating order:', error);
+      alert('Failed to create order.');
+    }
   };
 
   return (
@@ -40,13 +78,29 @@ const ServiceDetails = ({ service }) => {
         </div>
         <p className="text-gray-700 mb-6">{service.description}</p>
         <div className="flex justify-between mb-2 mt-12">
-          <button className="bg-teal-400 hover:bg-teal-500 text-white font-medium py-2 px-14 rounded-md transition duration-200 ease-in-out">
+          <button  onClick={handleOrderClick} className="bg-teal-400 hover:bg-teal-500 text-white font-medium py-2 px-14 rounded-md transition duration-200 ease-in-out">
             Order
           </button>
           <button className="bg-pink-400 hover:bg-gray-500 text-white font-medium py-2 px-14 rounded-md transition duration-200 ease-in-out">
             Chat
           </button>
         </div>
+        {showDatePicker && (
+          <div className="mt-4">
+            <Datetime
+              value={selectedDate}
+              onChange={handleDateChange}
+              inputProps={{ placeholder: 'Select Date and Time' }}
+              isValidDate={current => current.isAfter(moment().subtract(1, 'day'))}
+            />
+            <button
+              onClick={handleOrderSubmit}
+              className="mt-4 bg-teal-600 hover:bg-teal-700 text-white font-medium py-2 px-14 rounded-md transition duration-200 ease-in-out"
+            >
+              Submit Order
+            </button>
+          </div>
+        )}
         <button onClick={handleBackClick} className="bg-green-400 hover:bg-green-500 text-white font-medium py-2 rounded-md w-full transition duration-200 ease-in-out">
           Back
         </button>
