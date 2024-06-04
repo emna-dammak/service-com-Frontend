@@ -9,6 +9,7 @@ import ChatInterface from "./components/chatInterface";
 import ServiceList from "./components/ServiceList";
 import ServicePage from "./components/ServicePage/ServicePage";
 import HomePage from "./components/homepage/Homepage";
+import OrderTable from "./components/orders/orderTable";
 function App() {
   return (
     <Router>
@@ -45,6 +46,12 @@ function App() {
                 <> <Navbar></Navbar>
                     <div className="ml-[20vw] bg-gray-200 p-4">
                         <SpProfile />
+                    </div></>
+                } />
+                   <Route path="/orders" element={
+                <> <Navbar></Navbar>
+                    <div className="ml-[20vw] bg-gray-200 p-4">
+                        <OrderTable />
                     </div></>
                 } />
       </Routes>
