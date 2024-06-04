@@ -11,7 +11,7 @@ const Categories = () => {
   useEffect(() => {
     const fetchCategories = async () => {
       try {
-        const response = await fetch(`${API_URL}/category`, {
+        const response = await fetch(`${API_URL}category`, {
           method: "GET",
           headers: {
             "Content-Type": "application/json",
