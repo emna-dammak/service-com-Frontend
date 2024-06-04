@@ -60,7 +60,7 @@ const SignUpForm=({setPage})=>{
         formData.append('delegation', delegation);
         formData.append('email', email);
         formData.append('password', password);
-        formData.append('role', (isServiceProvider?"SERVICE_PROVIDER":"USER"));
+        formData.append('role', (isServiceProvider ? "SERVICE_PROVIDER" : "USER"));
 
         // If a profile image is selected, append it to the FormData
         if (profileImage) {
@@ -81,8 +81,43 @@ const SignUpForm=({setPage})=>{
             });
             // Handle success or error based on response
             if (response.ok) {
-                const data = await response.json();
-                //window.location.href = '/';
+                if(isServiceProvider){
+                const body = JSON.stringify({
+                    email: email,
+                    password: password,
+                });
+                const response2 = await fetch("http://localhost:3000/user/login", {
+                    method: "POST",
+                    headers: {
+                        "Content-Type": "application/json",
+                    },
+                    credentials: "include",
+
+                    body,
+                });
+                if(response2.ok){
+                    const formData2 = new FormData();
+                    if(cvFile){
+                        formData2.append('cv', cvFile);
+
+                    const response3 = await fetch("http://localhost:3000/user/cv", {
+                        method: "PATCH",
+                        credentials: "include",
+
+                        body: formData2,
+                    });
+                    console.log(response3)
+                    if(response3.ok){
+                        console.log("okkkkkkkkk")}else {
+                        throw new Error("An error occurred during CV upload.");
+                    }
+                }else {
+                    throw new Error("An error occurred during Signup.");
+                }
+                }
+                }
+
+                window.location.href = '/';
 
             }else if(response.status===409){
                 throw new Error("this email is already registred")
@@ -95,7 +130,11 @@ const SignUpForm=({setPage})=>{
             console.error('Registration error:', error);
             setErrorMessage(error.message || 'An error occurred during registration.');
         }
+
     };
+
+
+
     const handleServiceProviderChange = (event) => {
         setIsServiceProvider(event.target.checked);
     };
