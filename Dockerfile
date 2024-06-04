@@ -19,7 +19,7 @@ EXPOSE 3001
 # Set environment variable to specify the port (if needed)
 ENV PORT=3001
 
-ENV REACT_APP_SERVER_URL=http://20.188.44.129:3000/
+ENV REACT_APP_SERVER_URL=http://nestjs:3000/
 
 # Start the React application
 CMD ["npm", "start"]
