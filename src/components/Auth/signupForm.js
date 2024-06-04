@@ -19,11 +19,22 @@ const SignUpForm=({setPage})=>{
     const [errorMessage, setErrorMessage] = useState('');
     const [passwordVisible, setPasswordVisible] = useState(false);
     const [profileImage, setProfileImage] = useState(null);
+    const [profileImagePreview, setProfileImagePreview] = useState(null);
+    const [cvFile, setCvFile] = useState(null);
+    const [cvFilePreview, setCvFilePreview] = useState(null);
 
+    const handleCvChange = (event) => {
+        const file = event.target.files[0];
+        if (file) {
+            setCvFile(file);
+            setCvFilePreview(URL.createObjectURL(file)); // Set the preview URL
+        }
+    };
     const handleImageChange = (event) => {
         const file = event.target.files[0];
         if (file) {
-            setProfileImage(URL.createObjectURL(file));
+            setProfileImage(file);
+            setProfileImagePreview(URL.createObjectURL(file)); // Set the preview URL
         }
     };
 
@@ -49,12 +60,15 @@ const SignUpForm=({setPage})=>{
         formData.append('delegation', delegation);
         formData.append('email', email);
         formData.append('password', password);
-        formData.append('isServiceProvider', isServiceProvider);
+        formData.append('role', (isServiceProvider ? "SERVICE_PROVIDER" : "USER"));
 
         // If a profile image is selected, append it to the FormData
         if (profileImage) {
             // Assuming you have a file input ref or file object from state
             formData.append('profileImage', profileImage);
+        }
+        for (let [key, value] of formData.entries()) {
+            console.log(key, value);
         }
 
         // Send the request to the server
@@ -65,12 +79,46 @@ const SignUpForm=({setPage})=>{
                 // No headers included, as the fetch API automatically sets the Content-Type
                 // to 'multipart/form-data' when dealing with FormData.
             });
-
             // Handle success or error based on response
             if (response.ok) {
-                const data = await response.json();
-                window.location.href = '/';
-                // Handle further logic here, such as redirecting the user or showing a success message.
+                if(isServiceProvider){
+                const body = JSON.stringify({
+                    email: email,
+                    password: password,
+                });
+                const response2 = await fetch("http://localhost:3000/user/login", {
+                    method: "POST",
+                    headers: {
+                        "Content-Type": "application/json",
+                    },
+                    credentials: "include",
+
+                    body,
+                });
+                if(response2.ok){
+                    const formData2 = new FormData();
+                    if(cvFile){
+                        formData2.append('cv', cvFile);
+
+                    const response3 = await fetch("http://localhost:3000/user/cv", {
+                        method: "PATCH",
+                        credentials: "include",
+
+                        body: formData2,
+                    });
+                    console.log(response3)
+                    if(response3.ok){
+                        console.log("okkkkkkkkk")}else {
+                        throw new Error("An error occurred during CV upload.");
+                    }
+                }else {
+                    throw new Error("An error occurred during Signup.");
+                }
+                }
+                }
+
+                window.location.href = '/service';
+
             }else if(response.status===409){
                 throw new Error("this email is already registred")
             }
@@ -82,7 +130,11 @@ const SignUpForm=({setPage})=>{
             console.error('Registration error:', error);
             setErrorMessage(error.message || 'An error occurred during registration.');
         }
+
     };
+
+
+
     const handleServiceProviderChange = (event) => {
         setIsServiceProvider(event.target.checked);
     };
@@ -215,14 +267,14 @@ const SignUpForm=({setPage})=>{
                             <div>
                                 <img src={Close}
                                      className={"w-[2vw] h-[1.2vw] mr-4 hover:cursor-pointer"}
-                                     onClick={() => setProfileImage(null)} alt="close"/>
+                                     onClick={() => setProfileImagePreview(null)} alt="close"/>
                             </div> : null
                         }
 
                     </div>
-                    {profileImage ?
+                    {profileImagePreview ?
                         <div className="flex items-center justify-center">
-                            <img src={profileImage} alt='Profile' className='profile-image'/>
+                            <img src={profileImagePreview} alt='Profile' className='profile-image'/>
                         </div>
                         : <input
                             id="profileimg"
@@ -248,6 +300,58 @@ const SignUpForm=({setPage})=>{
                     />
 
                 </div>
+                {isServiceProvider && (
+                    <div className='cv-upload-container'>
+                        <div className="flex justify-between items-center mb-2 mt-2">
+                            <label htmlFor="cvFile" className="block text-[#263238]">
+                                Attach CV
+                            </label>
+                            {cvFilePreview &&
+                                <div>
+                                    <img src={Close}
+                                         className={"w-[2vw] h-[1.2vw] mr-4 hover:cursor-pointer"}
+                                         onClick={() => {
+                                             setCvFile(null);
+                                             setCvFilePreview(null);
+                                             URL.revokeObjectURL(cvFilePreview);
+                                         }} alt="close"/>
+                                </div>
+                            }
+                        </div>
+                        {!cvFilePreview ?
+                            <input
+                                id="cvFilePlaceholder"
+                                type="text"
+                                placeholder="Attach your CV"
+                                className="w-full p-3 border border-gray-300 rounded-md hover:cursor-pointer bg-transparent focus:outline-0 "
+                                onChange={(e) => e.preventDefault()}
+                                onClick={(e) => {
+                                    e.preventDefault();
+                                    document.getElementById('cvFile').click();
+                                }}
+                                readOnly={true}
+                            />
+                            : <div className="flex space-x-2">
+                                <input
+                                    type="text"
+                                    placeholder="View your CV"
+                                    className="w-full p-3 border border-gray-300 rounded-md hover:cursor-pointer bg-transparent focus:outline-0 "
+                                    onClick={(e) => {
+                                        e.preventDefault();
+                                        window.open(cvFilePreview, '_blank');
+                                    }}
+                                    readOnly={true}
+                                />
+                            </div>
+                        }
+                        <input
+                            className="hidden"
+                            type="file"
+                            id="cvFile"
+                            onChange={handleCvChange}
+                        />
+                    </div>
+                )}
                 <div className="mb-4 mt-6">
                     <label htmlFor="isServiceProvider" className="flex items-center text-[#263238]">
                         <input
@@ -260,6 +364,8 @@ const SignUpForm=({setPage})=>{
                         Are You A Service Provider?
                     </label>
                 </div>
+
+
                 <div className=" text-red-500 w-full h-[4vh] mt-4">{errorMessage ?? null}</div>
 
                 <div className="mb-4 mt-5">

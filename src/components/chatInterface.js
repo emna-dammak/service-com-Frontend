@@ -5,6 +5,7 @@ import SendMessageInput from "./sendMessage";
 import io from "socket.io-client";
 import ConversationList from "./conversationList";
 import { format } from "date-fns";
+import { Navigate, useNavigate } from "react-router-dom";
 
 const SERVER_URL = "http://localhost:3000/";
 
@@ -16,7 +17,8 @@ const ChatInterface = () => {
   const [currentConversation, setCurrentConversation] = useState(null);
   const [conversations, setConversations] = useState([]);
   const [conversationId, setConversationId] = useState();
-
+  const [loading, setLoading] = useState(true);
+  const navigate = useNavigate();
   useEffect(() => {
     const fetchConversations = async () => {
       try {
@@ -31,6 +33,10 @@ const ChatInterface = () => {
           }
         );
 
+        if (response.status === 401) {
+          navigate("/login");
+        }
+
         if (!response.ok) {
           throw new Error("Network response was not ok");
         }
@@ -43,6 +49,7 @@ const ChatInterface = () => {
           setCurrentConversation(lastConv);
           setConversationId(lastConv.id);
         }
+        setLoading(false);
       } catch (error) {
         console.error("Error fetching events:", error);
       }
@@ -129,9 +136,9 @@ const ChatInterface = () => {
     setCurrentConversation(conversation);
   };
 
-  return (
-    <div className="flex h-screen" style={{ backgroundColor: "#F8F7FA" }}>
-      <div className="w-1/4">
+  return loading ? null : (
+    <div className="rounded-lg p-6 pt-8 pb-8 mb-4 font-sans flex h-screen bg-gray-100 shadow-lg">
+      <div className="w-1/4 bg-white shadow-lg">
         <ConversationList
           onSelectConversation={selectConversation}
           conversations={conversations}
@@ -139,22 +146,24 @@ const ChatInterface = () => {
           currentUserId={currentUserId}
         />
       </div>
-      <div className="w-3/4 flex flex-col  bg-gray-100">
+      <div className="w-3/4 flex flex-col bg-white-100 shadow-lg">
         <ConversationHeader
           conversations={conversations}
           currentConversation={currentConversation}
           currentUserId={currentUserId}
         />
-        <div className="flex flex-col flex-grow overflow-y-auto">
-          <Message messages={messages} currentUserId={currentUserId} />
-        </div>
-        <div className="flex-shrink-0">
-          <SendMessageInput
-            sendMessage={handleSendMessage}
-            input={message}
-            setInput={setMessage}
-            currentUserId={currentUserId}
-          />
+        <div className="flex-grow flex flex-col bg-white overflow-hidden shadow-inner">
+          <div className="flex-grow overflow-y-auto">
+            <Message messages={messages} currentUserId={currentUserId} />
+          </div>
+          <div className="flex-shrink-0 bg-gray-100 shadow-md">
+            <SendMessageInput
+              sendMessage={handleSendMessage}
+              input={message}
+              setInput={setMessage}
+              currentUserId={currentUserId}
+            />
+          </div>
         </div>
       </div>
     </div>
