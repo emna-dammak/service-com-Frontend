@@ -19,5 +19,8 @@ EXPOSE 3001
 # Set environment variable to specify the port (if needed)
 ENV PORT=3001
 
+ENV REACT_APP_SERVER_URL=4.211.129.49/
+
+
 # Start the React application
 CMD ["npm", "start"]
