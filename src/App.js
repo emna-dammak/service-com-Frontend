@@ -9,6 +9,7 @@ import ChatInterface from "./components/chatInterface";
 import ServiceList from "./components/ServiceList";
 import ServicePage from "./components/ServicePage/ServicePage";
 import HomePage from "./components/homepage/Homepage";
+import OrderTable from "./components/orders/orderTable";
 import AuthGuard from "./components/authGuard/authGuard";
 function App() {
   return (
@@ -45,6 +46,7 @@ function App() {
           element={
               <AuthGuard>
             <>
+
 
               <Navbar></Navbar>
               <div className="ml-[20vw] bg-gray-200 p-4">
