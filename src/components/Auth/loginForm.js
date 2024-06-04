@@ -4,6 +4,8 @@ import Eye from "../../assets/eye.svg";
 import { useNavigate } from "react-router-dom";
 import React, { useState } from "react";
 
+const API_URL = process.env.REACT_APP_SERVER_URL;
+
 const LoginForm = ({ setPage }) => {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");

@@ -9,6 +9,8 @@ const AuthPage = () => {
   const initialPage = state?.page || 1;
   const [page, setPage] = useState(initialPage);
 
+  const API_URL = process.env.REACT_APP_SERVER_URL;
+
   return (
     <div className="flex justify-center items-center h-screen w-screen bg-[#cce7d4] font-public">
       <div

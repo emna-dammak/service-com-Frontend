@@ -3,6 +3,8 @@ import { useParams } from "react-router-dom";
 import PdfImageExtractor from "../ServiceProvider/PdfImageExtractor";
 import { Link } from "react-router-dom";
 
+const API_URL = process.env.REACT_APP_SERVER_URL;
+
 const SpCv = () => {
   const { id } = useParams();
   const [approvalStatus, setApprovalStatus] = useState({});
