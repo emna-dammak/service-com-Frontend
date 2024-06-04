@@ -3,18 +3,17 @@ import Datetime from 'react-datetime';
 import { useNavigate } from 'react-router-dom';
 import axios from 'axios';
 import moment from 'moment';
-
+import 'react-datetime/css/react-datetime.css';
+import '../../assets/calendar.css'; // Import the custom calendar styles
 
 const ServiceDetails = ({ service }) => {
-  console.log(service)
-
   const navigate = useNavigate();
   const [selectedDate, setSelectedDate] = useState(null);
   const [showDatePicker, setShowDatePicker] = useState(false);
+
   const handleBackClick = () => {
-    navigate(-1); 
+    navigate(-1);
   };
-console.log(service)
 
   const handleOrderClick = () => {
     setShowDatePicker(true);
@@ -78,7 +77,7 @@ console.log(service)
         </div>
         <p className="text-gray-700 mb-6">{service.description}</p>
         <div className="flex justify-between mb-2 mt-12">
-          <button  onClick={handleOrderClick} className="bg-teal-400 hover:bg-teal-500 text-white font-medium py-2 px-14 rounded-md transition duration-200 ease-in-out">
+          <button onClick={handleOrderClick} className="bg-teal-400 hover:bg-teal-500 text-white font-medium py-2 px-14 rounded-md transition duration-200 ease-in-out">
             Order
           </button>
           <button className="bg-pink-400 hover:bg-gray-500 text-white font-medium py-2 px-14 rounded-md transition duration-200 ease-in-out">
