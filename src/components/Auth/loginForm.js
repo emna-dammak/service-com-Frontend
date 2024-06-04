@@ -3,6 +3,7 @@ import EyeSlash from "../../assets/eye-slash.svg";
 import Eye from "../../assets/eye.svg";
 import { useNavigate } from "react-router-dom";
 import React, { useState } from "react";
+const API_URL = process.env.REACT_APP_SERVER_URL;
 
 const LoginForm = ({ setPage }) => {
   const [email, setEmail] = useState("");
@@ -20,7 +21,7 @@ const LoginForm = ({ setPage }) => {
         email: email,
         password: password,
       });
-      const response = await fetch("http://localhost:3000/user/login", {
+      const response = await fetch(`${API_URL}user/login`, {
         method: "POST",
         headers: {
           "Content-Type": "application/json",

@@ -7,7 +7,7 @@ import ConversationList from "./conversationList";
 import { format } from "date-fns";
 import { Navigate, useNavigate } from "react-router-dom";
 
-const SERVER_URL = "http://localhost:3000/";
+const API_URL = process.env.REACT_APP_SERVER_URL;
 
 const ChatInterface = () => {
   const [socket, setSocket] = useState(null);
@@ -22,16 +22,13 @@ const ChatInterface = () => {
   useEffect(() => {
     const fetchConversations = async () => {
       try {
-        const response = await fetch(
-          "http://localhost:3000/conversations/user",
-          {
-            method: "GET",
-            headers: {
-              "Content-Type": "application/json",
-            },
-            credentials: "include",
-          }
-        );
+        const response = await fetch(`${API_URL}conversations/user`, {
+          method: "GET",
+          headers: {
+            "Content-Type": "application/json",
+          },
+          credentials: "include",
+        });
 
         if (response.status === 401) {
           navigate("/login");
@@ -62,7 +59,7 @@ const ChatInterface = () => {
   }, [conversations]);
 
   useEffect(() => {
-    const socketIo = io(SERVER_URL, {
+    const socketIo = io(API_URL, {
       withCredentials: true,
     });
 

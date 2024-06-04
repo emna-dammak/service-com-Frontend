@@ -1,8 +1,10 @@
-import React, { useState, useEffect } from 'react';
-import ServiceDetails from './ServiceDetails';
-import Comments from './Comments';
-import OtherServices from './OtherServices';
-import { useLocation } from 'react-router-dom';
+import React, { useState, useEffect } from "react";
+import ServiceDetails from "./ServiceDetails";
+import Comments from "./Comments";
+import OtherServices from "./OtherServices";
+import { useLocation } from "react-router-dom";
+
+const API_URL = process.env.REACT_APP_SERVER_URL;
 
 const ServicePage = () => {
   const [comments, setComments] = useState([]);
@@ -10,29 +12,33 @@ const ServicePage = () => {
   const [user, setUser] = useState(null);
 
   const location = useLocation();
-  const { service, relatedServices = [], allServices = [] } = location.state || {};
+  const {
+    service,
+    relatedServices = [],
+    allServices = [],
+  } = location.state || {};
 
   useEffect(() => {
     const fetchUser = async () => {
       try {
-        const userResponse = await fetch('http://localhost:3000/user', {
-          method: 'GET',
+        const userResponse = await fetch(`${API_URL}user`, {
+          method: "GET",
           headers: {
-            'Content-Type': 'application/json',
+            "Content-Type": "application/json",
           },
-          credentials: 'include',
+          credentials: "include",
         });
 
         if (!userResponse.ok) {
-          throw new Error('Failed to fetch user data');
+          throw new Error("Failed to fetch user data");
         }
 
         const userData = await userResponse.json();
         setUser(userData);
-        console.log('User data fetched:', userData);
+        console.log("User data fetched:", userData);
       } catch (error) {
-        console.error('Fetching data failed:', error);
-        setError('Fetching data failed');
+        console.error("Fetching data failed:", error);
+        setError("Fetching data failed");
       }
     };
 
@@ -53,9 +59,13 @@ const ServicePage = () => {
           )}
         </div>
         <div className="flex-none pl-4">
-          <OtherServices 
-            ServiceProvider={service.profession.user.firstName + ' ' + service.profession.user.lastName} 
-            services={relatedServices} 
+          <OtherServices
+            ServiceProvider={
+              service.profession.user.firstName +
+              " " +
+              service.profession.user.lastName
+            }
+            services={relatedServices}
             AllServices={allServices}
           />
         </div>

@@ -1,7 +1,7 @@
-import React, { useEffect, useState } from 'react';
-import { useParams } from 'react-router-dom';
-import PdfImageExtractor from '../ServiceProvider/PdfImageExtractor';
-import { Link } from 'react-router-dom';
+import React, { useEffect, useState } from "react";
+import { useParams } from "react-router-dom";
+import PdfImageExtractor from "../ServiceProvider/PdfImageExtractor";
+import { Link } from "react-router-dom";
 
 const SpCv = () => {
   const { id } = useParams();
@@ -12,23 +12,23 @@ const SpCv = () => {
   useEffect(() => {
     const fetchProvider = async () => {
       try {
-        const response = await fetch(`http://localhost:3000/user/${id}`, {
-          method: 'GET',
+        const response = await fetch(`${API_URL}user/${id}`, {
+          method: "GET",
           headers: {
-            'Content-Type': 'application/json',
+            "Content-Type": "application/json",
           },
-          credentials: 'include',
+          credentials: "include",
         });
 
         if (!response.ok) {
-          throw new Error('Network response was not ok');
+          throw new Error("Network response was not ok");
         }
 
         const data = await response.json();
         setProvider(data);
       } catch (error) {
         setError(error.message);
-        console.error('Fetching data failed:', error);
+        console.error("Fetching data failed:", error);
       }
     };
 
@@ -37,41 +37,41 @@ const SpCv = () => {
 
   const handleApprove = async (id) => {
     try {
-      const response = await fetch(`http://localhost:3000/user/approve/${id}`, {
-        method: 'PATCH',
+      const response = await fetch(`${API_URL}user/approve/${id}`, {
+        method: "PATCH",
         headers: {
-          'Content-Type': 'application/json',
+          "Content-Type": "application/json",
         },
-        credentials: 'include',
+        credentials: "include",
       });
 
       if (!response.ok) {
-        throw new Error('Network response was not ok');
+        throw new Error("Network response was not ok");
       }
 
-      setApprovalStatus({ ...approvalStatus, [id]: 'approved' });
+      setApprovalStatus({ ...approvalStatus, [id]: "approved" });
     } catch (error) {
-      console.error('Approve action failed:', error);
+      console.error("Approve action failed:", error);
     }
   };
 
   const handleReject = async (id) => {
     try {
-      const response = await fetch(`http://localhost:3000/user/reject/${id}`, {
-        method: 'PATCH',
+      const response = await fetch(`${API_URL}user/reject/${id}`, {
+        method: "PATCH",
         headers: {
-          'Content-Type': 'application/json',
+          "Content-Type": "application/json",
         },
-        credentials: 'include',
+        credentials: "include",
       });
 
       if (!response.ok) {
-        throw new Error('Network response was not ok');
+        throw new Error("Network response was not ok");
       }
 
-      setApprovalStatus({ ...approvalStatus, [id]: 'rejected' });
+      setApprovalStatus({ ...approvalStatus, [id]: "rejected" });
     } catch (error) {
-      console.error('Reject action failed:', error);
+      console.error("Reject action failed:", error);
     }
   };
 
@@ -85,15 +85,33 @@ const SpCv = () => {
 
   return (
     <div className="rounded-lg flex justify-center items-center">
-      <div className="border border-gray-200" style={{ borderRadius: "5px", padding: '12px', boxShadow: '0px 4px 18px 0px rgba(75, 70, 92, 0.1)', backgroundColor: "rgba(241, 249, 243, 0.8)" }}>
+      <div
+        className="border border-gray-200"
+        style={{
+          borderRadius: "5px",
+          padding: "12px",
+          boxShadow: "0px 4px 18px 0px rgba(75, 70, 92, 0.1)",
+          backgroundColor: "rgba(241, 249, 243, 0.8)",
+        }}
+      >
         <div className="flex justify-center">
           <PdfImageExtractor pdfUrl={`/${provider.document}`} />
         </div>
         <div className="flex justify-center items-center mt-2">
-          {approvalStatus[provider.id] === 'approved' ? (
-            <p className="text-green-600 mr-8" style={{ fontSize: '23px', fontWeight: '375' }}>Approved</p>
-          ) : approvalStatus[provider.id] === 'rejected' ? (
-            <p className="text-red-600 mr-8" style={{ fontSize: '23px', fontWeight: '380' }}>Rejected</p>
+          {approvalStatus[provider.id] === "approved" ? (
+            <p
+              className="text-green-600 mr-8"
+              style={{ fontSize: "23px", fontWeight: "375" }}
+            >
+              Approved
+            </p>
+          ) : approvalStatus[provider.id] === "rejected" ? (
+            <p
+              className="text-red-600 mr-8"
+              style={{ fontSize: "23px", fontWeight: "380" }}
+            >
+              Rejected
+            </p>
           ) : (
             <>
               <button onClick={() => handleApprove(provider.id)}>
@@ -103,7 +121,7 @@ const SpCv = () => {
                 <img src="/reject.svg" alt="icon2" className="w-6 h-6 mr-4" />
               </button>
               <Link to={`/`}>
-              <img src="/back.svg" alt="icon3" className="w-9 h-7 mr-4" />
+                <img src="/back.svg" alt="icon3" className="w-9 h-7 mr-4" />
               </Link>
             </>
           )}

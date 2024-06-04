@@ -1,25 +1,28 @@
-import React, { useState, useEffect } from 'react';
-import io from 'socket.io-client';
+import React, { useState, useEffect } from "react";
+import io from "socket.io-client";
 
-const Comments = ({ serviceId , user}) => {
+const API_URL = process.env.REACT_APP_SERVER_URL;
+
+const Comments = ({ serviceId, user }) => {
   const [comments, setComments] = useState([]);
-  const [newComment, setNewComment] = useState('');
+  const [newComment, setNewComment] = useState("");
   const [currentPage, setCurrentPage] = useState(1);
   const commentsPerPage = 3;
   const [socket, setSocket] = useState(null);
 
   useEffect(() => {
-    const socketIO = io('http://localhost:3000/events', {
+    const socketIO = io(`${API_URL}events`, {
       withCredentials: true,
     });
     setSocket(socketIO);
-    socketIO.on('connect', () => {
-    });
-    socketIO.on('newComment', (newComment) => {
+    socketIO.on("connect", () => {});
+    socketIO.on("newComment", (newComment) => {
       if (newComment.service.id === Number(serviceId)) {
         const formattedComment = {
           ...newComment,
-          createdAt: newComment.createdAt ? newComment.createdAt.slice(0, 10) : ''
+          createdAt: newComment.createdAt
+            ? newComment.createdAt.slice(0, 10)
+            : "",
         };
         setComments((prevComments) => [formattedComment, ...prevComments]);
       }
@@ -34,27 +37,24 @@ const Comments = ({ serviceId , user}) => {
 
   const fetchComments = async () => {
     try {
-      const response = await fetch(
-        `http://localhost:3000/comments/${serviceId}`,
-        {
-          method: 'GET',
-          headers: {
-            'Content-Type': 'application/json',
-          },
-          credentials: 'include',
-        }
-      );
+      const response = await fetch(`${API_URL}comments/${serviceId}`, {
+        method: "GET",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        credentials: "include",
+      });
       if (!response.ok) {
-        throw new Error('Network response was not ok');
+        throw new Error("Network response was not ok");
       }
       const data = await response.json();
-      const formattedData = data.map(comment => ({
+      const formattedData = data.map((comment) => ({
         ...comment,
-        createdAt: comment.createdAt ? comment.createdAt.slice(0, 10) : ''
+        createdAt: comment.createdAt ? comment.createdAt.slice(0, 10) : "",
       }));
       setComments(formattedData.reverse());
     } catch (error) {
-      console.error('Error fetching comments:', error);
+      console.error("Error fetching comments:", error);
     }
   };
 
@@ -64,16 +64,22 @@ const Comments = ({ serviceId , user}) => {
 
   const handleCommentSubmit = async (e) => {
     e.preventDefault();
-    if (newComment.trim() === '') return;
+    if (newComment.trim() === "") return;
 
-    const newCommentData = { content: newComment, serviceId: Number(serviceId) };
-    socket.emit('comment', JSON.stringify(newCommentData));
-    setNewComment('');
+    const newCommentData = {
+      content: newComment,
+      serviceId: Number(serviceId),
+    };
+    socket.emit("comment", JSON.stringify(newCommentData));
+    setNewComment("");
   };
 
   const indexOfLastComment = currentPage * commentsPerPage;
   const indexOfFirstComment = indexOfLastComment - commentsPerPage;
-  const currentComments = comments.slice(indexOfFirstComment, indexOfLastComment);
+  const currentComments = comments.slice(
+    indexOfFirstComment,
+    indexOfLastComment
+  );
 
   const paginate = (pageNumber) => setCurrentPage(pageNumber);
 
@@ -87,7 +93,7 @@ const Comments = ({ serviceId , user}) => {
       <h3 className="text-lg font-bold mb-4 text-gray-800">Comments</h3>
       <form onSubmit={handleCommentSubmit} className="mb-4 flex items-center">
         <img
-          src= {`/${user.profileImagePath}`}// Replace with the actual path to the profile picture
+          src={`/${user.profileImagePath}`} // Replace with the actual path to the profile picture
           alt="Profile"
           className="w-10 h-10 rounded-full mr-2"
         />
@@ -107,7 +113,10 @@ const Comments = ({ serviceId , user}) => {
       </form>
       <div className="space-y-4">
         {currentComments.map((comment, index) => (
-          <div key={index} className="border border-gray-200 rounded-3xl p-4 shadow-sm flex items-start bg-emerald-50">
+          <div
+            key={index}
+            className="border border-gray-200 rounded-3xl p-4 shadow-sm flex items-start bg-emerald-50"
+          >
             <img
               src={`/${comment.user.profileImagePath}`}
               alt={`${comment.userId}'s profile`}
@@ -116,9 +125,11 @@ const Comments = ({ serviceId , user}) => {
             <div className="flex-1">
               <div className="flex justify-between items-center">
                 <p className="text-sm text-gray-800 font-semibold">
-                  {comment.user.firstName + ' ' + comment.user.lastName}
+                  {comment.user.firstName + " " + comment.user.lastName}
                 </p>
-                <span className="text-xs text-gray-500">{comment.createdAt}</span>
+                <span className="text-xs text-gray-500">
+                  {comment.createdAt}
+                </span>
               </div>
               <p className="text-gray-600 mt-2">{comment.content}</p>
             </div>
@@ -138,7 +149,7 @@ const Comments = ({ serviceId , user}) => {
             key={number}
             onClick={() => paginate(number)}
             className={`bg-green-400 hover:bg-green-500 text-white font-medium py-2 px-4 rounded ${
-              number === currentPage ? 'bg-green-300' : ''
+              number === currentPage ? "bg-green-300" : ""
             }`}
           >
             {number}

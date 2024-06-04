@@ -1,5 +1,7 @@
-import React, { useState, useEffect } from 'react';
-import { useNavigate } from 'react-router-dom';
+import React, { useState, useEffect } from "react";
+import { useNavigate } from "react-router-dom";
+
+const API_URL = process.env.REACT_APP_SERVER_URL;
 
 const Categories = () => {
   const [categories, setCategories] = useState([]);
@@ -9,25 +11,25 @@ const Categories = () => {
   useEffect(() => {
     const fetchCategories = async () => {
       try {
-        const response = await fetch('http://localhost:3000/category', {
-          method: 'GET',
+        const response = await fetch(`${API_URL}/category`, {
+          method: "GET",
           headers: {
-            'Content-Type': 'application/json',
+            "Content-Type": "application/json",
           },
-          credentials: 'include',
+          credentials: "include",
         });
 
         if (!response.ok) {
-          console.error('Failed to fetch categories data');
-          setError('Failed to fetch categories data');
+          console.error("Failed to fetch categories data");
+          setError("Failed to fetch categories data");
           return;
         }
 
         const data = await response.json();
         setCategories(data);
       } catch (error) {
-        console.error('Fetching data failed:', error);
-        setError('Fetching data failed');
+        console.error("Fetching data failed:", error);
+        setError("Fetching data failed");
       }
     };
 
@@ -59,7 +61,9 @@ const Categories = () => {
               style={{ opacity: 0.75 }}
             />
             <div className="absolute inset-0 bg-black bg-opacity-50 flex items-center justify-center transition-opacity duration-300 group-hover:bg-opacity-25">
-              <h4 className="text-white text-lg font-semibold">{category.title}</h4>
+              <h4 className="text-white text-lg font-semibold">
+                {category.title}
+              </h4>
             </div>
           </div>
         ))}
