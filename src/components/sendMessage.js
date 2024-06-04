@@ -1,11 +1,11 @@
 const SendMessageInput = (props) => {
   return (
-    <div class="border-t-2 border-gray-200 px-4 pt-4 mb-2 sm:mb-0">
-      <div class="relative flex">
+    <div class="border-t-2 border-gray-200   mb-2 sm:mb-0">
+      <div class="relative flex p-5 ">
         <input
           type="text"
           placeholder="Write your message!"
-          class="w-full focus:outline-none focus:placeholder-gray-400 text-gray-600 placeholder-gray-600 pl-12 bg-gray-200 rounded-md py-3"
+          class="w-full focus:outline-none focus:placeholder-gray-400 text-gray-600 placeholder-gray-600 pl-12 bg-white rounded-md py-3"
           value={props.input}
           onChange={(e) => props.setInput(e.target.value)}
           onKeyPress={(e) => e.key === "Enter" && props.sendMessage()}

@@ -6,6 +6,7 @@ import Services from './Services';
 import Footer from './Footer';
 
 const HomePage = () => {
+
   return (
     <div>
       <LandingPage />
