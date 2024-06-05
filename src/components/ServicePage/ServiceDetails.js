@@ -1,5 +1,10 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState }, { useState, useEffect } from 'react';
+import Datetime from 'react-datetime';
 import { useNavigate } from 'react-router-dom';
+import axios from 'axios';
+import moment from 'moment';
+import 'react-datetime/css/react-datetime.css';
+import '../../assets/calendar.css'; // Import the custom calendar styles
 
 const API_URL = process.env.REACT_APP_SERVER_URL;
 
@@ -7,6 +12,8 @@ const ServiceDetails = ({ service, updateCurrentService, user }) => {
   const navigate = useNavigate();
   const [showRatingPopup, setShowRatingPopup] = useState(false);
   const [rating, setRating] = useState(0);
+  const [selectedDate, setSelectedDate] = useState(null);
+  const [showDatePicker, setShowDatePicker] = useState(false);
 
   const handleBackClick = () => {
     navigate(-1);
@@ -59,6 +66,33 @@ const ServiceDetails = ({ service, updateCurrentService, user }) => {
       setShowRatingPopup(false);
     } catch (error) {
       console.error("Failed to submit rating:", error);
+  const handleOrderClick = () => {
+    setShowDatePicker(true);
+  };
+
+  const handleDateChange = (date) => {
+    setSelectedDate(date);
+  };
+
+  const handleOrderSubmit = async () => {
+    if (!selectedDate) {
+      alert('Please select a date and time.');
+      return;
+    }
+
+    const orderData = {
+      serviceId: service.id,
+      date: selectedDate.toISOString()
+    };
+    try {
+      const response = await axios.post('http://localhost:3000/order', orderData, {
+        withCredentials: true
+      });
+      alert('Order created successfully!');
+      navigate('/orders');
+    } catch (error) {
+      console.error('Error creating order:', error);
+      alert('Failed to create order.');
     }
   };
 
@@ -150,13 +184,29 @@ const ServiceDetails = ({ service, updateCurrentService, user }) => {
         </div>
         <p className="text-gray-700 mb-6">{service.description}</p>
         <div className="flex justify-between mb-2 mt-12">
-          <button className="bg-teal-400 hover:bg-teal-500 text-white font-medium py-2 px-14 rounded-md transition duration-200 ease-in-out">
+          <button onClick={handleOrderClick} className="bg-teal-400 hover:bg-teal-500 text-white font-medium py-2 px-14 rounded-md transition duration-200 ease-in-out">
             Order
           </button>
           <button className="bg-pink-400 hover:bg-gray-500 text-white font-medium py-2 px-14 rounded-md transition duration-200 ease-in-out">
             Chat
           </button>
         </div>
+        {showDatePicker && (
+          <div className="mt-4">
+            <Datetime
+              value={selectedDate}
+              onChange={handleDateChange}
+              inputProps={{ placeholder: 'Select Date and Time' }}
+              isValidDate={current => current.isAfter(moment().subtract(1, 'day'))}
+            />
+            <button
+              onClick={handleOrderSubmit}
+              className="mt-4 bg-teal-600 hover:bg-teal-700 text-white font-medium py-2 px-14 rounded-md transition duration-200 ease-in-out"
+            >
+              Submit Order
+            </button>
+          </div>
+        )}
         <button onClick={handleBackClick} className="bg-green-400 hover:bg-green-500 text-white font-medium py-2 rounded-md w-full transition duration-200 ease-in-out">
           Back
         </button>

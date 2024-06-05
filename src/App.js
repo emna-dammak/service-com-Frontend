@@ -9,7 +9,9 @@ import ChatInterface from "./components/chatInterface";
 import ServiceList from "./components/ServiceList";
 import ServicePage from "./components/ServicePage/ServicePage";
 import HomePage from "./components/homepage/Homepage";
+import OrderTable from "./components/orders/orderTable";
 import AuthGuard from "./components/authGuard/authGuard";
+import PlansArticle  from "./components/navbar/PlansArticle";
 function App() {
   return (
     <Router>
@@ -35,6 +37,8 @@ function App() {
               <Navbar></Navbar>
               <div className="ml-[20vw] bg-gray-200 p-4">
                 <ServiceList />
+                  <PlansArticle />
+                  <ServiceProviderList />
               </div>
             </>
             </AuthGuard>
@@ -45,6 +49,7 @@ function App() {
           element={
               <AuthGuard>
             <>
+
 
               <Navbar></Navbar>
               <div className="ml-[20vw] bg-gray-200 p-4">
@@ -60,7 +65,7 @@ function App() {
           element={
               <AuthGuard>
                   <>
-                      <Navbar />
+                      <Navbar isOpenp={3} />
                       <div className="ml-[20vw] bg-[#4B4B4B33]">
                           <ChatInterface />
                       </div>
@@ -91,6 +96,20 @@ function App() {
               <Navbar></Navbar>
               <div className="ml-[20vw] bg-gray-200 p-4">
                 <SpProfile />
+              </div>
+            </>
+              </AuthGuard>
+          }
+        />
+        <Route
+          path="/orders"
+          element={
+              <AuthGuard>
+            <>
+
+              <Navbar isOpenp={2}></Navbar>
+              <div className="ml-[20vw] bg-gray-200 p-4">
+                <OrderTable />
               </div>
             </>
               </AuthGuard>
