@@ -1,14 +1,16 @@
 // src/OrderTable.js
-import React, { useEffect, useState } from 'react';
-import axios from 'axios';
-import DataTable from 'react-data-table-component';
-import ReactPaginate from 'react-paginate';
-import './pagination.css'; // Create this file to style the pagination
+import React, { useEffect, useState } from "react";
+import axios from "axios";
+import DataTable from "react-data-table-component";
+import ReactPaginate from "react-paginate";
+import "./pagination.css"; // Create this file to style the pagination
+
+const API_URL = process.env.REACT_APP_SERVER_URL;
 
 const OrderTable = () => {
   const [orders, setOrders] = useState([]);
   const [currentPage, setCurrentPage] = useState(0);
-  const [role, setRole] = useState('');
+  const [role, setRole] = useState("");
   const ordersPerPage = 10;
 
   useEffect(() => {
@@ -18,8 +20,10 @@ const OrderTable = () => {
 
   const fetchOrders = async () => {
     try {
-      const response = await axios.get('http://localhost:3000/order', {withCredentials : true}); // Replace with your actual API endpoint
-      console.log('Fetched orders:', response.data);
+      const response = await axios.get(`${API_URL}order`, {
+        withCredentials: true,
+      }); // Replace with your actual API endpoint
+      console.log("Fetched orders:", response.data);
       const mappedData = response.data.map((item, index) => ({
         order: `#${item.id}`,
         date: new Date(item.date).toLocaleString(),
@@ -33,12 +37,14 @@ const OrderTable = () => {
       }));
       setOrders(mappedData);
     } catch (error) {
-      console.error('Error fetching data: ', error);
+      console.error("Error fetching data: ", error);
     }
   };
 
-  const fetchUserRole = async() => {
-    const response = await axios.get('http://localhost:3000/user/auth', { withCredentials: true });
+  const fetchUserRole = async () => {
+    const response = await axios.get(`${API_URL}user/auth`, {
+      withCredentials: true,
+    });
     setRole(response.data.role);
   };
 
@@ -48,58 +54,68 @@ const OrderTable = () => {
 
   const columnsUser = [
     {
-      name: 'Order',
-      selector: row => row.order,
+      name: "Order",
+      selector: (row) => row.order,
       sortable: true,
     },
     {
-      name: 'Date',
-      selector: row => row.date,
+      name: "Date",
+      selector: (row) => row.date,
       sortable: true,
     },
     {
-      name: 'Service Provider',
-      cell: row => (
+      name: "Service Provider",
+      cell: (row) => (
         <div className="flex items-center">
           <div className="w-8 h-8 rounded-full bg-gray-300 flex items-center justify-center">
             <span className="text-red">{row.serviceProviderInitials}</span>
           </div>
           <div className="ml-2">
             <div>{row.serviceProvider}</div>
-            <div className="text-sm text-gray-500">{row.serviceProvideremail}</div>
+            <div className="text-sm text-gray-500">
+              {row.serviceProvideremail}
+            </div>
           </div>
         </div>
       ),
       sortable: true,
     },
     {
-      name: 'Status',
-      cell: row => (
-        <span className={`px-2 py-1 rounded-full 
-        ${row.status === 'Finie' ? 'bg-green-200 text-green-800' : 
-         row.status === 'En attente de confirmaiton' ? 'bg-blue-200 text-blue-800' : 
-         row.status === 'Confirmé' ? 'bg-orange-200 text-orange-800' : ''}`}>
+      name: "Status",
+      cell: (row) => (
+        <span
+          className={`px-2 py-1 rounded-full 
+        ${
+          row.status === "Finie"
+            ? "bg-green-200 text-green-800"
+            : row.status === "En attente de confirmaiton"
+            ? "bg-blue-200 text-blue-800"
+            : row.status === "Confirmé"
+            ? "bg-orange-200 text-orange-800"
+            : ""
+        }`}
+        >
           {row.status}
         </span>
       ),
       sortable: true,
-    }
+    },
   ];
 
   const columnsServiceProvider = [
     {
-      name: 'Order',
-      selector: row => row.order,
+      name: "Order",
+      selector: (row) => row.order,
       sortable: true,
     },
     {
-      name: 'Date',
-      selector: row => row.date,
+      name: "Date",
+      selector: (row) => row.date,
       sortable: true,
     },
     {
-      name: 'Client',
-      cell: row => (
+      name: "Client",
+      cell: (row) => (
         <div className="flex items-center">
           <div className="w-8 h-8 rounded-full bg-gray-300 flex items-center justify-center">
             <span className="text-white">{row.clientInitials}</span>
@@ -113,53 +129,62 @@ const OrderTable = () => {
       sortable: true,
     },
     {
-      name: 'Status',
-      cell: row => (
-        <span className={`px-2 py-1 rounded-full 
-        ${row.status === 'Finie' ? 'bg-green-200 text-green-800' : 
-         row.status === 'En attente de confirmaiton' ? 'bg-blue-200 text-blue-800' : 
-         row.status === 'Confirmé' ? 'bg-orange-200 text-orange-800' : ''}`}>
+      name: "Status",
+      cell: (row) => (
+        <span
+          className={`px-2 py-1 rounded-full 
+        ${
+          row.status === "Finie"
+            ? "bg-green-200 text-green-800"
+            : row.status === "En attente de confirmaiton"
+            ? "bg-blue-200 text-blue-800"
+            : row.status === "Confirmé"
+            ? "bg-orange-200 text-orange-800"
+            : ""
+        }`}
+        >
           {row.status}
         </span>
       ),
       sortable: true,
-    }
+    },
   ];
 
   const columnsAdmin = [
     {
-      name: 'Order',
-      selector: row => row.order,
+      name: "Order",
+      selector: (row) => row.order,
       sortable: true,
-      minWidth: '100px',
-
+      minWidth: "100px",
     },
     {
-      name: 'Date',
-      selector: row => row.date,
+      name: "Date",
+      selector: (row) => row.date,
       sortable: true,
     },
     {
-      name: 'Service Provider',
-      minWidth: '200px',
-      cell: row => (
+      name: "Service Provider",
+      minWidth: "200px",
+      cell: (row) => (
         <div className="flex items-center">
           <div className="w-8 h-8 rounded-full bg-gray-300 flex items-center justify-center">
             <span className="text-white">{row.serviceProviderInitials}</span>
           </div>
           <div className="ml-2">
             <div>{row.serviceProvider}</div>
-            <div className="text-sm text-gray-500">{row.serviceProvideremail}</div>
+            <div className="text-sm text-gray-500">
+              {row.serviceProvideremail}
+            </div>
           </div>
         </div>
       ),
       sortable: true,
     },
     {
-      name: 'Client',
-      minWidth: '200px',
+      name: "Client",
+      minWidth: "200px",
 
-      cell: row => (
+      cell: (row) => (
         <div className="flex items-center">
           <div className="w-8 h-8 rounded-full bg-gray-300 flex items-center justify-center">
             <span className="text-white">{row.clientInitials}</span>
@@ -173,17 +198,25 @@ const OrderTable = () => {
       sortable: true,
     },
     {
-      name: 'Status',
-      cell: row => (
-        <span className={`px-2 py-1 rounded-full 
-        ${row.status === 'Finie' ? 'bg-green-200 text-green-800' : 
-         row.status === 'En attente de confirmaiton' ? 'bg-blue-200 text-blue-800' : 
-         row.status === 'Confirmé' ? 'bg-orange-200 text-orange-800' : ''}`}>
+      name: "Status",
+      cell: (row) => (
+        <span
+          className={`px-2 py-1 rounded-full 
+        ${
+          row.status === "Finie"
+            ? "bg-green-200 text-green-800"
+            : row.status === "En attente de confirmaiton"
+            ? "bg-blue-200 text-blue-800"
+            : row.status === "Confirmé"
+            ? "bg-orange-200 text-orange-800"
+            : ""
+        }`}
+        >
           {row.status}
         </span>
       ),
       sortable: true,
-    }
+    },
   ];
 
   const paginatedOrders = orders.slice(
@@ -192,13 +225,13 @@ const OrderTable = () => {
   );
 
   const getColumns = () => {
-    if (role === 'ADMIN') {
+    if (role === "ADMIN") {
       return columnsAdmin;
     }
-    if (role === 'USER') {
+    if (role === "USER") {
       return columnsUser;
     }
-if (role === 'SERVICE_PROVIDER') {
+    if (role === "SERVICE_PROVIDER") {
       return columnsServiceProvider;
     }
     return [];
@@ -212,16 +245,16 @@ if (role === 'SERVICE_PROVIDER') {
         pagination={false}
       />
       <ReactPaginate
-        previousLabel={'Previous'}
-        nextLabel={'Next'}
-        breakLabel={'...'}
-        breakClassName={'break-me'}
+        previousLabel={"Previous"}
+        nextLabel={"Next"}
+        breakLabel={"..."}
+        breakClassName={"break-me"}
         pageCount={Math.ceil(orders.length / ordersPerPage)}
         marginPagesDisplayed={2}
         pageRangeDisplayed={3}
         onPageChange={handlePageClick}
-        containerClassName={'pagination'}
-        activeClassName={'active'}
+        containerClassName={"pagination"}
+        activeClassName={"active"}
       />
     </div>
   );

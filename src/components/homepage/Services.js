@@ -32,7 +32,7 @@ const Services = () => {
           data.map(async (service) => {
             try {
               const ratingResponse = await fetch(
-                `http://localhost:3000/ratings/${service.id}`,
+                `${API_URL}ratings/${service.id}`,
                 {
                   method: "GET",
                   headers: {
