@@ -1,4 +1,4 @@
-import React, { useState }, { useState, useEffect } from 'react';
+import React, { useState, useEffect } from 'react';
 import Datetime from 'react-datetime';
 import { useNavigate } from 'react-router-dom';
 import axios from 'axios';
@@ -66,6 +66,8 @@ const ServiceDetails = ({ service, updateCurrentService, user }) => {
       setShowRatingPopup(false);
     } catch (error) {
       console.error("Failed to submit rating:", error);
+    }
+  };
   const handleOrderClick = () => {
     setShowDatePicker(true);
   };

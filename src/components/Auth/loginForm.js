@@ -4,16 +4,11 @@ import Eye from "../../assets/eye.svg";
 import { useNavigate } from "react-router-dom";
 import React, { useState } from "react";
 
-const API_URL = process.env.REACT_APP_SERVER_URL;
-
 const LoginForm = ({ setPage }) => {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [errorMessage, setErrorMessage] = useState("");
   const [passwordVisible, setPasswordVisible] = useState(false);
-  const [user, setUser] = useState(null);
-  const [error, setError] = useState(null);
-
 
   const navigate = useNavigate();
 
@@ -46,36 +41,7 @@ const LoginForm = ({ setPage }) => {
 
         return;
       } else {
-        const fetchUser = async () => {
-          try {
-            const userResponse = await fetch(`${API_URL}user/auth`, {
-              method: "GET",
-              headers: {
-                "Content-Type": "application/json",
-              },
-              credentials: "include",
-            });
-    
-            if (!userResponse.ok) {
-              throw new Error("Failed to fetch user data");
-            }
-    
-            const userData = await userResponse.json();
-            setUser(userData);
-            console.log("User data fetched:", userData);
-          } catch (error) {
-            console.error("Fetching data failed:", error);
-            setError("Fetching data failed");
-          }
-        };
-    
-        fetchUser();
-        const role = await user.role;
-        if (role === 'ADMIN') {
-          navigate('/AdminAR');
-        } else {
-          navigate('/service');
-        }
+        navigate("/service");
       }
     } catch (error) {
       setErrorMessage("An error occurred. Please try again.");
