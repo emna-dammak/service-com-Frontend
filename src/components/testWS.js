@@ -1,7 +1,7 @@
 import React, { useEffect, useState } from "react";
 import io from "socket.io-client";
 
-const SERVER_URL = "localhost:3000/";
+const SERVER_URL = "nestjs:3000/";
 const token =
   "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6MTEsImZpcnN0TmFtZSI6Ikpob24iLCJsYXN0TmFtZSI6IkRvZSIsImVtYWlsIjoidGVzdGV0ZXN0ZXN0ZXdzQGdtYWlsLmNvbSIsImdvdXZlcm5vcmF0IjoiVHVuaXMiLCJkZWxlZ2F0aW9uIjoiQXJpYW5hIiwiaWF0IjoxNzE0OTg5NjUxfQ.-kCrFQU8COlOL7zpsY_dmX_Oz9q0FDg50YprtgfHKQo"; // Insert your JWT token here
 
