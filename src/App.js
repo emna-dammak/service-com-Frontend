@@ -9,6 +9,9 @@ import ChatInterface from "./components/chatInterface";
 import ServiceList from "./components/ServiceList";
 import ServicePage from "./components/ServicePage/ServicePage";
 import HomePage from "./components/homepage/Homepage";
+import OrderTable from "./components/orders/orderTable";
+import AuthGuard from "./components/authGuard/authGuard";
+import PlansArticle  from "./components/navbar/PlansArticle";
 function App() {
   return (
     <Router>
@@ -28,62 +31,88 @@ function App() {
           exact
           path="/service"
           element={
+            <AuthGuard>
             <>
-              {" "}
+
               <Navbar></Navbar>
               <div className="ml-[20vw] bg-gray-200 p-4">
                 <ServiceList />
+                  <PlansArticle />
+                  <ServiceProviderList />
               </div>
             </>
+            </AuthGuard>
           }
         />
         <Route
           path="/service/:id"
           element={
+              <AuthGuard>
             <>
-              {" "}
+
+
               <Navbar></Navbar>
               <div className="ml-[20vw] bg-gray-200 p-4">
                 <ServicePage />
               </div>
             </>
+              </AuthGuard>
           }
         />
 
         <Route
           path="/chat"
           element={
-            <>
-              {" "}
-              <Navbar></Navbar>
-              <div className="ml-[20vw] bg-[#4B4B4B33]">
-                <ChatInterface />
-              </div>
-            </>
+              <AuthGuard>
+                  <>
+                      <Navbar isOpenp={3} />
+                      <div className="ml-[20vw] bg-[#4B4B4B33]">
+                          <ChatInterface />
+                      </div>
+                  </>
+              </AuthGuard>
           }
         ></Route>
         <Route
           path="/sp"
           element={
+              <AuthGuard>
             <>
-              {" "}
+
               <Navbar></Navbar>
               <div className="ml-[20vw] bg-gray-200 p-4">
                 <ServiceProviderList />
               </div>
             </>
+              </AuthGuard>
           }
         />
         <Route
           path="/profile/:id"
           element={
+              <AuthGuard>
             <>
-              {" "}
+
               <Navbar></Navbar>
               <div className="ml-[20vw] bg-gray-200 p-4">
                 <SpProfile />
               </div>
             </>
+              </AuthGuard>
+          }
+        />
+        <Route
+          path="/orders"
+          element={
+              <AuthGuard>
+            <>
+
+              <Navbar isOpenp={2}></Navbar>
+              <div className="ml-[20vw] bg-gray-200 p-4">
+                <OrderTable />
+              </div>
+            </>
+              </AuthGuard>
           }
         />
       </Routes>

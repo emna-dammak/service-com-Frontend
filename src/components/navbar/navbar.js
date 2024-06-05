@@ -7,8 +7,8 @@ import { ReactComponent as Basket } from "../../assets/basket.svg";
 import { ReactComponent as Arrow } from "../../assets/arrow.svg";
 import { useNavigate } from "react-router-dom";
 
-const Navbar = () => {
-  const [isOpen, setIsOpen] = useState(1);
+const Navbar = ({ isOpenp }) => {
+  const [isOpen, setIsOpen] = useState(isOpenp ?? 1);
   const navigate = useNavigate();
   const handlenavigation = (pageName) => {
     let path = "";
@@ -17,8 +17,8 @@ const Navbar = () => {
         path = "/service";
         setIsOpen(1);
         break;
-      case "order":
-        path = "/";
+      case "orders":
+        path = "/orders";
         setIsOpen(2);
 
         break;
@@ -61,7 +61,7 @@ const Navbar = () => {
             backgroundColor: isOpen === 2 ? "#63C474" : "",
             color: isOpen === 2 ? "white" : "",
           }}
-          onClick={() => handlenavigation("order")}
+          onClick={() => handlenavigation("orders")}
         >
           <div className="flex items-center">
             <Basket className="w-6 h-6" />
