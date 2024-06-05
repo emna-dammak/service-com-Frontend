@@ -87,7 +87,7 @@ const Comments = ({ serviceId , user}) => {
       <h3 className="text-lg font-bold mb-4 text-gray-800">Comments</h3>
       <form onSubmit={handleCommentSubmit} className="mb-4 flex items-center">
         <img
-          src= {`/${user.profileImagePath}`}// Replace with the actual path to the profile picture
+          src= {`/${user.profileImagePath}`}
           alt="Profile"
           className="w-10 h-10 rounded-full mr-2"
         />
